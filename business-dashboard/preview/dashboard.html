@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Business Dashboard — Today</title>
+<style>
+  :root {
+    --ink:#0b0c0e;
+    --panel:#15171b;
+    --edge:#22262c;
+    --muted:#7a8190;
+    --accent:#5eead4;
+    --white:#ffffff;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin:0; padding:0;
+    background: var(--ink);
+    color: var(--white);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size:14px; line-height:1.45;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { opacity: 0.8; }
+  .demo-banner {
+    background: rgba(94,234,212,0.10);
+    border-bottom: 1px solid rgba(94,234,212,0.40);
+    color: var(--accent);
+    padding: 8px 32px;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+  }
+  header.app {
+    border-bottom: 1px solid var(--edge);
+    padding: 20px 32px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  header .date { color: var(--muted); font-size: 13px; }
+  header h1 { margin:2px 0 0 0; font-size: 22px; font-weight: 600; }
+  nav.app { display:flex; gap:18px; font-size:14px; }
+  nav.app a.muted { color: var(--muted); }
+  main.container {
+    max-width: 1100px; margin: 0 auto; padding: 32px;
+    display: flex; flex-direction: column; gap: 24px;
+  }
+  section.card {
+    background: var(--panel);
+    border: 1px solid var(--edge);
+    border-radius: 16px;
+    padding: 24px;
+  }
+  section h2 {
+    margin: 0 0 16px 0;
+    font-size: 17px; font-weight: 600;
+  }
+  section h2 .count {
+    color: var(--muted); font-weight: 400; font-size: 13px;
+  }
+  .btn-ghost {
+    border: 1px solid var(--edge);
+    background: transparent;
+    color: var(--white);
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .btn-accent {
+    background: var(--accent);
+    color: var(--ink);
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: 0;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .btn-accent[disabled] { opacity: 0.4; cursor: not-allowed; }
+  .briefing-head {
+    display:flex; justify-content: space-between; align-items: flex-start;
+    margin-bottom: 16px;
+  }
+  .briefing pre {
+    margin: 0;
+    white-space: pre-wrap;
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .briefing strong { color: var(--white); }
+  .briefing h1 { font-size: 15px; margin: 18px 0 6px; color: var(--white); font-weight: 600; }
+  .briefing h1:first-child { margin-top: 0; }
+  .briefing ul { margin: 4px 0 0 18px; padding: 0; }
+  .briefing li { margin-bottom: 6px; }
+  .briefing p { margin: 6px 0; }
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+  @media (max-width: 900px) {
+    .grid-2 { grid-template-columns: 1fr; }
+  }
+  ul.list { list-style: none; padding: 0; margin: 0; display:flex; flex-direction:column; gap:12px; }
+  li.row {
+    border: 1px solid var(--edge);
+    border-radius: 12px;
+    padding: 14px 16px;
+  }
+  .meeting-row { display:flex; justify-content: space-between; gap: 16px; }
+  .meeting-name { font-weight: 500; }
+  .meeting-attendees { color: var(--muted); font-size: 13px; margin-top: 4px; }
+  .meeting-link { font-size: 12px; margin-top: 8px; display: inline-block; }
+  .meeting-time { color: var(--muted); white-space: nowrap; font-size: 13px; }
+  .email-row { display:flex; align-items: flex-start; gap: 12px; }
+  .unread-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); margin-top: 6px; flex-shrink: 0; }
+  .email-body { flex:1; min-width: 0; }
+  .email-top { display:flex; justify-content:space-between; gap:12px; }
+  .email-from { font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .email-when { color: var(--muted); font-size: 12px; white-space: nowrap; }
+  .email-subject { margin-top: 2px; overflow:hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .email-snippet { color: var(--muted); font-size: 12px; margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .followup-head { display:flex; justify-content: space-between; gap: 16px; }
+  .followup-name { font-weight: 500; }
+  .followup-name .meta { color: var(--muted); font-weight: 400; }
+  .followup-detail { color: var(--muted); font-size: 13px; margin-top: 4px; }
+  .stage { text-transform: capitalize; }
+  .draft-box {
+    margin-top: 12px;
+    border: 1px solid var(--edge);
+    background: var(--ink);
+    border-radius: 8px;
+    padding: 12px;
+  }
+  .draft-subject { font-weight: 500; margin-bottom: 6px; }
+  .draft-body { color: var(--muted); white-space: pre-wrap; font-family: inherit; font-size: 13px; line-height: 1.5; }
+  .save-link { color: var(--accent); font-size: 12px; margin-top: 10px; display: inline-block; }
+</style>
+</head>
+<body>
+
+<div class="demo-banner">DEMO MODE — mock data, no real Gmail/Calendar/Claude calls</div>
+
+<header class="app">
+  <div>
+    <div class="date" id="date"></div>
+    <h1>Good morning, Blake.</h1>
+  </div>
+  <nav class="app">
+    <a href="dashboard.html">Dashboard</a>
+    <a href="contacts.html" class="muted">Contacts</a>
+    <a href="#" class="muted">Sign out</a>
+  </nav>
+</header>
+
+<main class="container">
+
+  <!-- Today's focus / Briefing -->
+  <section class="card briefing">
+    <div class="briefing-head">
+      <h2>Today's focus</h2>
+      <button class="btn-ghost">Regenerate</button>
+    </div>
+
+    <h1>Today's focus</h1>
+    <p>The single highest-leverage thing today: <strong>close the loop with Lydia at 10am</strong>. She's asked to see a workflow demo before the call — sending it now (before the meeting, not after) flips this from a friendly check-in into a working session, and she's the contact most likely to convert this quarter.</p>
+
+    <h1>Meetings today</h1>
+    <ul>
+      <li><strong>10:00 — Lydia Rosenberg (Consume Media).</strong> Send the AI workflow demo <em>before</em> the call. Lead with the onboarding flow she mentioned at the mixer. Ask: "what would make this a 'must have' for your team this quarter?"</li>
+      <li><strong>13:30 — Marcus Chen + Amy Li (TechStars).</strong> This is a referral pipeline conversation, not a project pitch. Goal: understand cohort fit criteria, ask if you can present to the cohort. Don't over-sell the build work.</li>
+      <li><strong>15:00–17:00 — Deep work block.</strong> Protect this. AI infra is the bottleneck on every active deal.</li>
+    </ul>
+
+    <h1>Inbox triage</h1>
+    <ul>
+      <li><strong>Sarah Patel (Northstar) — proposal tweaks.</strong> Reply today. She said "sign next week" — speed signals seriousness. 2 sentences acknowledging, send revised scope before EOD.</li>
+      <li><strong>Lydia (pre-meeting).</strong> Don't reply in email — bring the demo to the meeting.</li>
+      <li><strong>Marcus (prep).</strong> Quick reply confirming you'll come prepared with the cohort fit angle.</li>
+    </ul>
+
+    <h1>Follow-ups due</h1>
+    <ul>
+      <li><strong>Anna Reyes (Anchorline PR)</strong> — 18 days since last touch, one-pager promised. She's gating 3 warm intros on this. <em>This is the highest unrealized referral value in your pipeline.</em> Send the one-pager today even if rough.</li>
+      <li><strong>James O'Connor (Bridgepoint)</strong> — 42 days, going dormant. Re-engage with a case study or write him off this quarter.</li>
+    </ul>
+
+    <h1>Gaps to watch</h1>
+    <p>Pipeline is concentrated: 2 warm/in-conversation contacts (Lydia, Marcus) carry most of the near-term revenue. If either stalls, your Q2 close rate falls off a cliff. Action: every networking event for the next 3 weeks should produce at least 1 net-new "in-conversation" contact, not just business cards.</p>
+  </section>
+
+  <!-- Meetings + Inbox -->
+  <div class="grid-2">
+    <section class="card">
+      <h2>Today's meetings</h2>
+      <ul class="list">
+        <li class="row">
+          <div class="meeting-row">
+            <div>
+              <div class="meeting-name">1:1 with Lydia Rosenberg — Consume Media</div>
+              <div class="meeting-attendees">Lydia Rosenberg</div>
+              <a class="meeting-link" href="#">Join link</a>
+            </div>
+            <div class="meeting-time">10:00 AM</div>
+          </div>
+        </li>
+        <li class="row">
+          <div class="meeting-row">
+            <div>
+              <div class="meeting-name">Discovery call — TechStars cohort lead</div>
+              <div class="meeting-attendees">Marcus Chen, Amy Li</div>
+              <a class="meeting-link" href="#">Join link</a>
+            </div>
+            <div class="meeting-time">1:30 PM</div>
+          </div>
+        </li>
+        <li class="row">
+          <div class="meeting-row">
+            <div>
+              <div class="meeting-name">Deep work block — AI infra build</div>
+              <div class="meeting-attendees">Solo block</div>
+            </div>
+            <div class="meeting-time">3:00 PM</div>
+          </div>
+        </li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>Inbox <span class="count">(3 unread)</span></h2>
+      <ul class="list">
+        <li class="row">
+          <div class="email-row">
+            <div class="unread-dot"></div>
+            <div class="email-body">
+              <div class="email-top">
+                <div class="email-from">Lydia Rosenberg</div>
+                <div class="email-when">2h ago</div>
+              </div>
+              <div class="email-subject">Re: Loved our chat at NYC Founders mixer</div>
+              <div class="email-snippet">Following up on what you mentioned about the AI workflow templates — would love to see a quick demo before our call today.</div>
+            </div>
+          </div>
+        </li>
+        <li class="row">
+          <div class="email-row">
+            <div class="unread-dot"></div>
+            <div class="email-body">
+              <div class="email-top">
+                <div class="email-from">Marcus Chen</div>
+                <div class="email-when">4h ago</div>
+              </div>
+              <div class="email-subject">Agenda for 1:30 — quick prep</div>
+              <div class="email-snippet">Sending over the cohort metrics. We're particularly interested in how your automations could fit our DPM workflow.</div>
+            </div>
+          </div>
+        </li>
+        <li class="row">
+          <div class="email-row">
+            <div class="unread-dot"></div>
+            <div class="email-body">
+              <div class="email-top">
+                <div class="email-from">Sarah Patel</div>
+                <div class="email-when">8h ago</div>
+              </div>
+              <div class="email-subject">Proposal feedback — tweaks needed</div>
+              <div class="email-snippet">Reviewed with the team. Two changes on scope, otherwise we're a go. Can we sign next week?</div>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </section>
+  </div>
+
+  <!-- Follow-ups -->
+  <section class="card">
+    <h2>Follow-ups due</h2>
+    <ul class="list">
+      <li class="row">
+        <div class="followup-head">
+          <div>
+            <div class="followup-name">Lydia Rosenberg <span class="meta">· Consume Media</span></div>
+            <div class="followup-detail">Last touch: 5 days ago · <span class="stage">in-conversation</span> · Send AI workflow demo</div>
+          </div>
+          <button class="btn-accent">Draft email</button>
+        </div>
+        <div class="draft-box">
+          <div class="draft-subject">Quick demo before our 10am — workflow templates</div>
+          <pre class="draft-body">Lydia,
+
+Quick one before we hop on at 10. Putting together a short Loom of the onboarding workflow you mentioned at the Founders mixer — the one where new creator signups would get auto-segmented and routed. Should land in your inbox by 9:45.
+
+Couple of questions I'd love your read on during the call:
+- Is the bottleneck more in the segmentation logic or the downstream routing into your tools?
+- Who on your team would actually own this once it's live?
+
+Won't be polished — meant to be a starting point we can poke holes in together.
+
+Talk in a bit,</pre>
+          <a class="save-link" href="#">Save to Gmail drafts →</a>
+        </div>
+      </li>
+      <li class="row">
+        <div class="followup-head">
+          <div>
+            <div class="followup-name">Anna Reyes <span class="meta">· Anchorline PR</span></div>
+            <div class="followup-detail">Last touch: 18 days ago · <span class="stage">in-conversation</span> · Send one-pager</div>
+          </div>
+          <button class="btn-accent">Draft email</button>
+        </div>
+      </li>
+      <li class="row">
+        <div class="followup-head">
+          <div>
+            <div class="followup-name">Marcus Chen <span class="meta">· TechStars</span></div>
+            <div class="followup-detail">Last touch: 11 days ago · <span class="stage">warm</span> · Discovery call today</div>
+          </div>
+          <button class="btn-accent">Draft email</button>
+        </div>
+      </li>
+      <li class="row">
+        <div class="followup-head">
+          <div>
+            <div class="followup-name">Priya Krishnan <span class="meta">· Alta Ventures</span></div>
+            <div class="followup-detail">Last touch: 28 days ago · <span class="stage">warm</span> · Share Q2 progress note</div>
+          </div>
+          <button class="btn-accent">Draft email</button>
+        </div>
+      </li>
+      <li class="row">
+        <div class="followup-head">
+          <div>
+            <div class="followup-name">James O'Connor <span class="meta">· Bridgepoint Ops</span></div>
+            <div class="followup-detail">Last touch: 42 days ago · <span class="stage">networking</span> · Re-engage with case study</div>
+          </div>
+          <button class="btn-accent">Draft email</button>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+</main>
+
+<script>
+  document.getElementById("date").textContent =
+    new Date().toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" });
+</script>
+</body>
+</html>

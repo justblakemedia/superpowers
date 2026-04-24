@@ -95,7 +95,7 @@ export async function listUpcomingEvents(
   }));
 }
 
-function parseFromHeader(value: string | undefined): {
+function parseFromHeader(value: string | null | undefined): {
   display: string;
   email: string | null;
 } {

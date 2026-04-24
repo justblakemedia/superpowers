@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { Contact } from "@/lib/db";
+import type { Contact } from "@/lib/types";
 
 function daysSince(iso: string | null): string {
   if (!iso) return "never";

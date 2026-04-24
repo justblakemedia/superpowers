@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import type { Contact } from "@/lib/db";
-import { PIPELINE_STAGES } from "@/lib/db";
+import type { Contact } from "@/lib/types";
+import { PIPELINE_STAGES } from "@/lib/types";
 
 const blank = {
   name: "",

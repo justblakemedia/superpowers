@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Business Dashboard — Preview</title>
+<style>
+  :root {
+    --ink:#0b0c0e;
+    --panel:#15171b;
+    --edge:#22262c;
+    --muted:#7a8190;
+    --accent:#5eead4;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin:0; padding:0;
+    background: var(--ink);
+    color: white;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .wrap {
+    max-width: 720px; padding: 40px;
+  }
+  h1 { font-size: 28px; margin: 0 0 12px; }
+  p.lede { color: var(--muted); margin: 0 0 32px; line-height: 1.6; }
+  .cards { display: grid; gap: 16px; }
+  a.card {
+    display: block;
+    text-decoration: none;
+    background: var(--panel);
+    border: 1px solid var(--edge);
+    border-radius: 14px;
+    padding: 24px;
+    color: white;
+    transition: border-color 0.15s;
+  }
+  a.card:hover { border-color: var(--accent); }
+  a.card h2 { margin: 0 0 6px; font-size: 18px; color: var(--accent); }
+  a.card p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.5; }
+  .footnote { color: var(--muted); font-size: 12px; margin-top: 32px; line-height: 1.6; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Business Dashboard — Preview</h1>
+  <p class="lede">Static HTML mockups of the dashboard. No setup needed — just click through. Data is mock; the real app pulls from your Gmail, Calendar, contacts DB, and Claude.</p>
+
+  <div class="cards">
+    <a class="card" href="dashboard.html">
+      <h2>Dashboard →</h2>
+      <p>Today's focus briefing, meetings, inbox triage, and follow-ups due. Includes a sample AI-drafted follow-up email for Lydia.</p>
+    </a>
+    <a class="card" href="contacts.html">
+      <h2>Contacts →</h2>
+      <p>Add new networking contacts and manage pipeline stages. Where you build the CRM that turns relationships into revenue.</p>
+    </a>
+  </div>
+
+  <p class="footnote">
+    These are static previews — clicking buttons does nothing. The real app (in <code>../</code>) is a Next.js application
+    that reads your real Gmail and Calendar, writes contact notes into your Obsidian JB Vault,
+    and uses Claude to draft follow-ups and morning briefings.
+  </p>
+</div>
+</body>
+</html>
